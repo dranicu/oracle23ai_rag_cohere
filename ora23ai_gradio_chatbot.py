@@ -6,7 +6,8 @@ from ora23ai_model_utils import *
 
 
 def clean_up_vector_db():
-    adb_user, adb_pwd, dns, dbwallet_dir, dbwallet_dir, atp_wallet_pwd = db_connection()
+    adb_pwd, dns, dbwallet_dir, dbwallet_dir, atp_wallet_pwd = db_connection()
+    adb_user = "ADMIN" 
     db_client = oracledb.connect(
         user=adb_user,
         password=adb_pwd,
@@ -14,14 +15,29 @@ def clean_up_vector_db():
         config_dir=dbwallet_dir,
         wallet_location=dbwallet_dir,
         wallet_password=atp_wallet_pwd)
-    sql_tables = """SELECT table_name FROM all_tables WHERE owner='VECTORUSER' AND TABLE_NAME!='DBTOOLS$EXECUTION_HISTORY' AND TABLE_NAME NOT LIKE '%VECTOR%'"""
-    cursor = db_client.cursor()
-    cursor.execute(sql_tables)
-    result = cursor.fetchall()
     
-    for table in result:
-        sql_drop = "DROP TABLE {}".format(table[0])
-        cursor.execute(sql_drop)
+    adb_user_vector = "vectoruser"
+   
+    sql_get_users = """SELECT * FROM all_users"""
+    sql_drop_user = f"""DROP USER {adb_user_vector} CASCADE"""
+    sql_create_user = f"""CREATE USER {adb_user_vector} IDENTIFIED BY {adb_pwd} DEFAULT TABLESPACE ORDS_PUBLIC_USER TEMPORARY TABLESPACE temp QUOTA UNLIMITED ON ORDS_PUBLIC_USER"""
+    sql_grant_user = f"""GRANT CONNECT, RESOURCE TO {adb_user_vector}"""
+
+    cursor = db_client.cursor()
+    cursor.execute(sql_get_users)
+    result = cursor.fetchall()
+    cursor.close()
+    
+    if "VECTORUSER" in (user[0] for user in result):
+        cursor = db_client.cursor()
+        cursor.execute(sql_drop_user)
+        cursor.execute(sql_create_user)
+        cursor.execute(sql_grant_user)
+    else:
+        cursor = db_client.cursor()
+        cursor.execute(sql_create_user)
+        cursor.execute(sql_grant_user)
+        
     db_client.close()
 
 def fetch_session_hash(request: gr.Request):

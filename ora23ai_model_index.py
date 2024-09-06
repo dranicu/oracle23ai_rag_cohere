@@ -51,8 +51,9 @@ def create_vector_store_index(collection_name, file_path, embedding):
         documents = text_splitter.split_documents(pages)
 
     enriched_documents = [Document(inject_metadata(doc), metadata=doc.metadata) for doc in documents]
-    adb_user, adb_pwd, dns, dbwallet_dir, dbwallet_dir, atp_wallet_pwd = db_connection()
-
+    adb_pwd, dns, dbwallet_dir, dbwallet_dir, atp_wallet_pwd = db_connection()
+    adb_user = "vectoruser"
+    
     db_client = oracledb.connect(
         user=adb_user,
         password=adb_pwd,
