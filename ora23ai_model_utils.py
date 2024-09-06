@@ -4,11 +4,10 @@ from ora23ai_model_index import *
 from ora23ai_connection import db_connection
 from langchain_community.vectorstores.oraclevs import OracleVS
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
-from langchain_core.prompts import MessagesPlaceholder
+from langchain_core.prompts import ChatPromptTemplate, PromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_community.chat_message_histories import ChatMessageHistory
-from langchain.prompts import PromptTemplate, ChatPromptTemplate
 
 # Global environment variables used to store state based on session_id
 store = {}
