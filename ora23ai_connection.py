@@ -1,6 +1,7 @@
 import oci
 import string
 import random
+import os
 from zipfile import ZipFile
 
 
@@ -16,10 +17,12 @@ def db_connection():
     except Exception:
         print("There was an error while trying to get the Signer")
         raise SystemExit
-        
-    # generate config info from signer
-    config = {'region': signer.region, 'tenancy': signer.tenancy_id}
-
+    
+    # create DB wallet directory if it does not exist
+    dir = "ADBWallet" 
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+    
     db_client = oci.database.DatabaseClient(config = {}, signer=signer)
     # the OCId of the ATP db from where will download the wallet
     adb_ocid = "<PLACEHOLDER>"  # ADB OCID FROM ORM STACK OR FROM YOU OCI TENANCY
