@@ -20,8 +20,8 @@ def db_connection():
         print("There was an error while trying to get the Signer")
         raise SystemExit
     
-    secret_ocid = "ocid1.vaultsecret.oc1.eu-frankfurt-1.amaaaaaaxkh5s6iatpv4bfrf5capywbmm4i5lxr6dbuacovxpfakdrh2llla"
-    adb_ocid = "ocid1.autonomousdatabase.oc1.eu-frankfurt-1.antheljsxkh5s6ia3mmpaphcwixuuxovxura6on7dooxk5wzthwpuh3sru4a"
+    secret_ocid = "<PLACEHOLDER>"
+    adb_ocid = "<PLACEHOLDER>"
 
     secret_client = oci.secrets.SecretsClient(config={}, signer=signer)
     response = secret_client.get_secret_bundle(secret_ocid)
